@@ -3,70 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
- copilot/fix-d3a7a090-4206-4601-9682-2b1e200d3771
-    <title>Fast Track Academy</title>
+    <title>Fast Track Academy - Accelerate Your Learning</title>
     <meta name="description" content="Fast Track Academy - Learn, Grow, Excel">
     <link rel="stylesheet" href="css/style.css">
-  
-    <title>Fast Track Academy - Accelerate Your Learning</title>
     <link rel="stylesheet" href="style.css">
-  main
 </head>
 <body>
     <header>
         <nav>
- copilot/fix-d3a7a090-4206-4601-9682-2b1e200d3771
             <div class="container">
                 <h1 class="logo">Fast Track Academy</h1>
                 <ul class="nav-links">
                     <li><a href="#home">Home</a></li>
                     <li><a href="#about">About</a></li>
                     <li><a href="#courses">Courses</a></li>
+                    <li><a href="#virtual-classroom">Virtual Classroom</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
             </div>
-
-            <div class="logo">
-                <h1>Fast Track Academy</h1>
-            </div>
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#courses">Courses</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
- main
         </nav>
     </header>
 
     <main>
         <section id="home" class="hero">
-          copilot/fix-d3a7a090-4206-4601-9682-2b1e200d3771
-            <div class="container">
-                <h2>Welcome to Fast Track Academy</h2>
-                <p>Your journey to excellence starts here.</p>
-            </div>
-        </section>
-
-        <section id="about" class="section">
-            <div class="container">
-                <h2>About Us</h2>
-                <p>Fast Track Academy is dedicated to providing high-quality education and training.</p>
-            </div>
-        </section>
-
-        <section id="courses" class="section">
-            <div class="container">
-                <h2>Our Courses</h2>
-                <p>Discover our range of courses designed to accelerate your learning.</p>
-            </div>
-        </section>
-
-        <section id="contact" class="section">
-            <div class="container">
-                <h2>Contact Us</h2>
-                <p>Get in touch with us to learn more about our programs.</p>
-
             <div class="hero-content">
                 <h2>Accelerate Your Learning Journey</h2>
                 <p>Fast Track Academy offers intensive, practical courses designed to get you job-ready in the shortest time possible.</p>
@@ -134,6 +93,90 @@
             </div>
         </section>
 
+        <section id="virtual-classroom" class="virtual-classroom">
+            <div class="container">
+                <h2>🚪 Virtual Classroom Experience</h2>
+                <p class="classroom-intro">Step into our immersive virtual learning environment where education meets innovation!</p>
+                
+                <div class="classroom-entrance">
+                    <div class="entrance-door" id="classroomDoor">
+                        <div class="door-handle"></div>
+                        <div class="door-window"></div>
+                        <h3>Click to Enter Classroom</h3>
+                        <p class="door-status">🔴 Preparing Experience...</p>
+                    </div>
+                </div>
+
+                <div class="classroom-features" id="classroomContent" style="display: none;">
+                    <div class="feature-grid">
+                        <div class="classroom-feature">
+                            <div class="feature-icon">🎥</div>
+                            <h4>Live Interactive Sessions</h4>
+                            <p>Join real-time classes with expert instructors</p>
+                            <div class="status-indicator live">🟢 2 Live Sessions Now</div>
+                        </div>
+                        
+                        <div class="classroom-feature">
+                            <div class="feature-icon">📚</div>
+                            <h4>Digital Course Materials</h4>
+                            <p>Access comprehensive learning resources instantly</p>
+                            <div class="status-indicator">📖 50+ Resources Available</div>
+                        </div>
+                        
+                        <div class="classroom-feature">
+                            <div class="feature-icon">👥</div>
+                            <h4>Collaborative Learning</h4>
+                            <p>Connect with fellow students worldwide</p>
+                            <div class="status-indicator">👥 127 Students Online</div>
+                        </div>
+                        
+                        <div class="classroom-feature">
+                            <div class="feature-icon">🎯</div>
+                            <h4>Interactive Exercises</h4>
+                            <p>Hands-on practice with immediate feedback</p>
+                            <div class="status-indicator">⚡ Real-time Feedback</div>
+                        </div>
+                    </div>
+
+                    <div class="live-dashboard">
+                        <h3>🔴 Live Learning Dashboard</h3>
+                        <div class="dashboard-stats">
+                            <div class="stat-item">
+                                <span class="stat-number" id="studentsOnline">127</span>
+                                <span class="stat-label">Students Online</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="liveSessions">2</span>
+                                <span class="stat-label">Live Sessions</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="completedToday">43</span>
+                                <span class="stat-label">Completed Today</span>
+                            </div>
+                        </div>
+                        
+                        <div class="current-sessions">
+                            <h4>🎬 Active Sessions Right Now</h4>
+                            <div class="session-list">
+                                <div class="session-item">
+                                    <span class="session-subject">Web Development Bootcamp</span>
+                                    <span class="session-topic">React Hooks & State Management</span>
+                                    <span class="session-time">Started 15 min ago</span>
+                                    <button class="join-btn">Join Now</button>
+                                </div>
+                                <div class="session-item">
+                                    <span class="session-subject">Data Science Track</span>
+                                    <span class="session-topic">Machine Learning Fundamentals</span>
+                                    <span class="session-time">Started 5 min ago</span>
+                                    <button class="join-btn">Join Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section id="contact" class="contact">
             <div class="container">
                 <h2>Get Started Today</h2>
@@ -152,20 +195,16 @@
                         <p>Available Online & On-Site</p>
                     </div>
                 </div>
- main
             </div>
         </section>
     </main>
 
     <footer>
         <div class="container">
-copilot/fix-d3a7a090-4206-4601-9682-2b1e200d3771
-            <p>&copy; 2024 Fast Track Academy. All rights reserved.</p>
+            <p>&copy; 2024 Fast Track Academy. Accelerating careers through intensive education.</p>
         </div>
     </footer>
 
     <script src="js/script.js"></script>
-
-            <p>&copy; 2024 Fast Track Academy. Accelerating careers through intensive education.</p>
-        </div>
-    </footer>
+</body>
+</html>
