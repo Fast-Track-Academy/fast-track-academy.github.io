@@ -49,10 +49,9 @@ function initVirtualClassroom() {
     let isClassroomOpen = false;
     
     // Simulate loading and preparing the classroom
-    setTimeout(() => {
-        doorStatus.textContent = '🟢 Ready to Enter!';
-        doorStatus.style.color = '#90EE90';
-    }, 2000);
+    // Immediate readiness for better user experience
+    doorStatus.textContent = '🟢 Ready to Enter!';
+    doorStatus.style.color = '#90EE90';
     
     // Door click event
     classroomDoor.addEventListener('click', function() {
@@ -183,8 +182,11 @@ function initVirtualClassroom() {
                 max-width: 500px;
                 box-shadow: 0 20px 40px rgba(0,0,0,0.3);
             ">
-                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">🎉 Welcome to Virtual Classroom!</h2>
-                <p style="font-size: 1.2rem; margin-bottom: 2rem;">Experience the future of hybrid learning with real-time interaction and exciting features!</p>
+                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">🎉 Welcome to Your Ready Classroom!</h2>
+                <p style="font-size: 1.2rem; margin-bottom: 2rem;">Your virtual learning environment is fully prepared and ready for an amazing educational experience!</p>
+                <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 10px; margin-bottom: 2rem;">
+                    <p style="margin: 0; font-size: 1rem;">✅ All systems online<br>✅ Live sessions active<br>✅ Course materials loaded<br>✅ Interactive features ready</p>
+                </div>
                 <button id="closeWelcome" style="
                     background: linear-gradient(135deg, #FF6B6B, #FF8E53);
                     color: white;
@@ -213,7 +215,7 @@ function initVirtualClassroom() {
             }, 500);
         });
         
-        // Auto close after 5 seconds
+        // Auto close after 6 seconds (slightly longer to read the readiness checklist)
         setTimeout(() => {
             if (document.body.contains(welcomeOverlay)) {
                 welcomeOverlay.style.opacity = '0';
@@ -223,7 +225,7 @@ function initVirtualClassroom() {
                     }
                 }, 500);
             }
-        }, 5000);
+        }, 6000);
     }
     
     // Add click handlers for join buttons
@@ -231,7 +233,104 @@ function initVirtualClassroom() {
     joinButtons.forEach(button => {
         button.addEventListener('click', function() {
             const sessionSubject = this.parentElement.querySelector('.session-subject').textContent;
-            alert(`🎬 Joining ${sessionSubject} session! This would normally open the live classroom interface.`);
+            const sessionTopic = this.parentElement.querySelector('.session-topic').textContent;
+            
+            // Create a more realistic joining experience
+            const joinOverlay = document.createElement('div');
+            joinOverlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 10000;
+                opacity: 0;
+                transition: opacity 0.5s ease;
+            `;
+            
+            joinOverlay.innerHTML = `
+                <div style="
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    padding: 3rem;
+                    border-radius: 20px;
+                    text-align: center;
+                    color: white;
+                    max-width: 600px;
+                    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+                ">
+                    <h2 style="font-size: 2rem; margin-bottom: 1rem;">🎬 Joining Live Session</h2>
+                    <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: #FFD700;">${sessionSubject}</h3>
+                    <p style="font-size: 1.1rem; margin-bottom: 2rem; opacity: 0.9;">${sessionTopic}</p>
+                    <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 10px; margin-bottom: 2rem;">
+                        <p style="margin: 0; font-size: 1rem;">
+                            <span style="display: inline-block; width: 20px;">🔄</span> Connecting to session...<br>
+                            <span style="display: inline-block; width: 20px;">🎥</span> Preparing video feed...<br>
+                            <span style="display: inline-block; width: 20px;">🎵</span> Testing audio connection...<br>
+                            <span style="display: inline-block; width: 20px;">📚</span> Loading course materials...
+                        </p>
+                    </div>
+                    <p style="margin-bottom: 2rem; font-size: 0.9rem; opacity: 0.8;">In a real application, this would open the live classroom interface with video conferencing, chat, and interactive tools.</p>
+                    <button id="closeJoinOverlay" style="
+                        background: linear-gradient(135deg, #28a745, #20c997);
+                        color: white;
+                        border: none;
+                        padding: 1rem 2rem;
+                        border-radius: 25px;
+                        font-size: 1.1rem;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        margin-right: 1rem;
+                    ">Enter Classroom 🚀</button>
+                    <button id="cancelJoin" style="
+                        background: rgba(255,255,255,0.2);
+                        color: white;
+                        border: 1px solid rgba(255,255,255,0.3);
+                        padding: 1rem 2rem;
+                        border-radius: 25px;
+                        font-size: 1.1rem;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                    ">Cancel</button>
+                </div>
+            `;
+            
+            document.body.appendChild(joinOverlay);
+            
+            // Fade in the overlay
+            setTimeout(() => {
+                joinOverlay.style.opacity = '1';
+            }, 100);
+            
+            // Close handlers
+            document.getElementById('closeJoinOverlay').addEventListener('click', () => {
+                joinOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(joinOverlay);
+                }, 500);
+            });
+            
+            document.getElementById('cancelJoin').addEventListener('click', () => {
+                joinOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(joinOverlay);
+                }, 500);
+            });
+            
+            // Auto close after 8 seconds
+            setTimeout(() => {
+                if (document.body.contains(joinOverlay)) {
+                    joinOverlay.style.opacity = '0';
+                    setTimeout(() => {
+                        if (document.body.contains(joinOverlay)) {
+                            document.body.removeChild(joinOverlay);
+                        }
+                    }, 500);
+                }
+            }, 8000);
         });
     });
 }
