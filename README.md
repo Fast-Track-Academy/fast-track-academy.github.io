@@ -4,6 +4,25 @@
 
 A digital temple and interactive hub for "The Grand Plan" - an elite educational system built with Next.js, TypeScript, and Tailwind CSS.
 
+## 🚀 Quick Start
+
+### View the Live Site
+**Deployed URL:** [https://fast-track-academy.github.io](https://fast-track-academy.github.io)
+
+*Note: The site will be live once this PR is merged to the `main` branch.*
+
+### Run Locally (3 Simple Steps)
+```bash
+# 1. Install dependencies
+npm install
+
+# 2. Start the development server
+npm run dev
+
+# 3. Open in your browser
+# Navigate to http://localhost:3000
+```
+
 ![Fast Track Academy](https://github.com/user-attachments/assets/7e666599-3df0-4c43-bd6a-94926495a791)
 
 ## Overview
