@@ -796,6 +796,34 @@ export default function Home() {
           </div>
 
           <ProgressTracker />
+
+          {/* Student Resources */}
+          <div className="mt-12 border-2 border-[#d4af37]/30 bg-gradient-to-br from-[#1c142c]/60 to-black/60 p-8">
+            <div className="flex items-start gap-4">
+              <div className="text-4xl">📚</div>
+              <div className="flex-1">
+                <h4 className="mb-3 text-xl font-bold text-[#d4af37]">New to The Grand Plan?</h4>
+                <p className="mb-4 text-base text-gray-300 leading-relaxed">
+                  Read our comprehensive <strong className="text-[#d4af37]">Student Guide</strong> to learn how to navigate the site, 
+                  track your progress, use the Virtual Classroom, and make the most of your learning journey.
+                </p>
+                <div className="flex flex-wrap gap-4">
+                  <a
+                    href="https://github.com/Fast-Track-Academy/fast-track-academy.github.io/blob/main/STUDENT_GUIDE.md"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block border-2 border-[#d4af37] px-6 py-2 text-sm font-semibold uppercase tracking-wider text-[#d4af37] transition-all duration-300 hover:bg-[#d4af37] hover:text-black"
+                  >
+                    📖 View Student Guide
+                  </a>
+                  <div className="flex items-center gap-2 text-sm text-gray-400">
+                    <span>💡</span>
+                    <span>Tip: Bookmark this page for easy access</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

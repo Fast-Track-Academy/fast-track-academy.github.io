@@ -6,6 +6,9 @@ A digital temple and interactive hub for "The Grand Plan" - an elite educational
 
 ## 🚀 Quick Start
 
+### For Students
+**📖 New to The Grand Plan?** Read the [Student Guide](STUDENT_GUIDE.md) for a complete walkthrough!
+
 ### View the Live Site
 **Deployed URL:** [https://fast-track-academy.github.io](https://fast-track-academy.github.io)
 
