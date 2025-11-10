@@ -67,6 +67,116 @@ const IMMERSION_TOOLS = [
   }
 ];
 
+function ProgressTracker() {
+  const [completedLevels, setCompletedLevels] = useState<Set<number>>(() => {
+    // Initialize from localStorage on mount
+    if (typeof window === 'undefined') return new Set();
+    
+    const saved = localStorage.getItem('codecombat-progress');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        return new Set(parsed);
+      } catch (e) {
+        console.error('Failed to load progress:', e);
+        return new Set();
+      }
+    }
+    return new Set();
+  });
+
+  const toggleLevel = useCallback((level: number) => {
+    setCompletedLevels((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(level)) {
+        newSet.delete(level);
+      } else {
+        newSet.add(level);
+      }
+      // Save to localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('codecombat-progress', JSON.stringify(Array.from(newSet)));
+      }
+      return newSet;
+    });
+  }, []);
+
+  const resetProgress = useCallback(() => {
+    if (typeof window !== 'undefined' && confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+      setCompletedLevels(new Set());
+      localStorage.removeItem('codecombat-progress');
+    }
+  }, []);
+
+  const completionPercentage = Math.round((completedLevels.size / 20) * 100);
+
+  return (
+    <div className="border-2 border-[#d4af37]/40 bg-gradient-to-br from-[#1c142c]/40 to-black/40 p-6">
+      <div className="mb-4 flex items-center justify-between">
+        <h4 className="text-xl font-bold text-[#d4af37]">
+          Progress Tracker
+        </h4>
+        <button
+          onClick={resetProgress}
+          className="text-xs uppercase tracking-wider text-gray-400 hover:text-[#d4af37] transition-colors"
+          title="Reset all progress"
+        >
+          Reset
+        </button>
+      </div>
+      
+      <div className="mb-4">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm text-gray-300">
+            {completedLevels.size} of 20 levels completed
+          </span>
+          <span className="text-sm font-semibold text-[#d4af37]">{completionPercentage}%</span>
+        </div>
+        <div className="h-3 bg-gray-800 border border-[#d4af37]/30 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-gradient-to-r from-[#d4af37] to-[#b5a642] transition-all duration-500"
+            style={{ width: `${completionPercentage}%` }}
+          />
+        </div>
+      </div>
+
+      <p className="text-xs text-gray-400 mb-4 italic">
+        Click on a level number to mark it as complete
+      </p>
+
+      <div className="flex flex-wrap gap-2">
+        {Array.from({ length: 20 }).map((_, i) => {
+          const level = i + 1;
+          const isCompleted = completedLevels.has(level);
+          return (
+            <button
+              key={level}
+              onClick={() => toggleLevel(level)}
+              className={`flex h-10 w-10 items-center justify-center border text-xs font-semibold transition-all duration-300 hover:scale-110 ${
+                isCompleted
+                  ? 'border-[#d4af37] bg-[#d4af37] text-black shadow-[0_0_12px_rgba(212,175,55,0.6)]'
+                  : 'border-[#d4af37]/40 text-gray-300 hover:border-[#d4af37] hover:bg-[#d4af37]/10'
+              }`}
+              title={isCompleted ? `Level ${level} - Completed! Click to unmark` : `Level ${level} - Click to mark as complete`}
+            >
+              {level}
+            </button>
+          );
+        })}
+      </div>
+
+      {completedLevels.size === 20 && (
+        <div className="mt-4 p-4 border-2 border-[#d4af37] bg-[#d4af37]/10 text-center">
+          <p className="text-lg font-bold text-[#d4af37] mb-2">🎉 First Degree Complete! 🎉</p>
+          <p className="text-sm text-gray-300">
+            You have mastered the fundamental language of creation. The path to the Second Degree awaits.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function VirtualClassroomSection() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const autoOpenRef = useRef(false);
@@ -685,18 +795,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="border-2 border-gray-600 bg-gray-900/20 p-6">
-            <h4 className="mb-4 text-xl font-bold text-gray-500">
-              Progress Tracker <span className="text-sm">(Coming Soon)</span>
-            </h4>
-            <div className="flex flex-wrap gap-2 opacity-30">
-              {Array.from({ length: 20 }).map((_, i) => (
-                <div key={i} className="flex h-8 w-8 items-center justify-center border border-gray-600 text-xs">
-                  {i + 1}
-                </div>
-              ))}
-            </div>
-          </div>
+          <ProgressTracker />
         </div>
       </section>
 

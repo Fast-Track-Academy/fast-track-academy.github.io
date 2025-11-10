@@ -9,7 +9,7 @@ A digital temple and interactive hub for "The Grand Plan" - an elite educational
 ### View the Live Site
 **Deployed URL:** [https://fast-track-academy.github.io](https://fast-track-academy.github.io)
 
-*Note: The site will be live once this PR is merged to the `main` branch.*
+*The site will be automatically deployed when this PR is merged to the `main` branch.*
 
 ### Run Locally (3 Simple Steps)
 ```bash
@@ -57,8 +57,10 @@ The website is a single-page application with four distinct sections:
 - Learn to identify and dismantle flawed logic
 - Document findings in the Grimoire
 
-**Progress Tracker** (Placeholder)
-- Visual representation of completion status (future feature)
+**Progress Tracker**
+- Visual representation of completion status
+- Interactive tracking of CodeCombat levels
+- Persists progress across sessions using local storage
 
 ### 3. The Scribe's Chamber (The Grimoire)
 - Establishes the importance of journaling and documentation
