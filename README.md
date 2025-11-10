@@ -125,8 +125,35 @@ This site is configured for GitHub Pages deployment:
 2. Images are set to be unoptimized for static hosting
 3. A `.nojekyll` file is included in the `public/` directory
 4. The build output goes to the `out/` directory
+5. GitHub Actions workflow (`.github/workflows/deploy.yml`) automatically builds and deploys on push to `main`
 
-The site is automatically deployed to: [https://fast-track-academy.github.io](https://fast-track-academy.github.io)
+**The site is automatically deployed to:** [https://fast-track-academy.github.io](https://fast-track-academy.github.io)
+
+### Deployment Status
+
+When this PR is merged to `main`, the site will be automatically built and deployed via GitHub Actions.
+
+## Student Features
+
+### 📊 Interactive Progress Tracker
+- Track completion of CodeCombat levels 1-20
+- Progress saved automatically in browser's local storage
+- Visual progress bar with percentage
+- Completion celebration message
+- Reset functionality
+
+### 📚 Comprehensive Documentation
+- **[Student Guide](STUDENT_GUIDE.md)** - Complete walkthrough for new students
+- Getting started instructions
+- How to use all features
+- Tips for success
+- Troubleshooting help
+
+### 🎓 Virtual Classroom
+- Immersive learning environment
+- AI instructor (Ava) with interactive responses
+- Real-time session tracking
+- Workshop and Q&A features
 
 ## Project Structure
 
