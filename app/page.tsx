@@ -67,6 +67,421 @@ const IMMERSION_TOOLS = [
   }
 ];
 
+function ProgressTracker() {
+  const [completedLevels, setCompletedLevels] = useState<Set<number>>(() => {
+    // Initialize from localStorage on mount
+    if (typeof window === 'undefined') return new Set();
+    
+    const saved = localStorage.getItem('codecombat-progress');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        return new Set(parsed);
+      } catch (e) {
+        console.error('Failed to load progress:', e);
+        return new Set();
+      }
+    }
+    return new Set();
+  });
+
+  const toggleLevel = useCallback((level: number) => {
+    setCompletedLevels((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(level)) {
+        newSet.delete(level);
+      } else {
+        newSet.add(level);
+      }
+      // Save to localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('codecombat-progress', JSON.stringify(Array.from(newSet)));
+      }
+      return newSet;
+    });
+  }, []);
+
+  const resetProgress = useCallback(() => {
+    if (typeof window !== 'undefined' && confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+      setCompletedLevels(new Set());
+      localStorage.removeItem('codecombat-progress');
+    }
+  }, []);
+
+  const completionPercentage = Math.round((completedLevels.size / 20) * 100);
+
+  return (
+    <div className="border-2 border-[#d4af37]/40 bg-gradient-to-br from-[#1c142c]/40 to-black/40 p-6">
+      <div className="mb-4 flex items-center justify-between">
+        <h4 className="text-xl font-bold text-[#d4af37]">
+          Progress Tracker
+        </h4>
+        <button
+          onClick={resetProgress}
+          className="text-xs uppercase tracking-wider text-gray-400 hover:text-[#d4af37] transition-colors"
+          title="Reset all progress"
+        >
+          Reset
+        </button>
+      </div>
+      
+      <div className="mb-4">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm text-gray-300">
+            {completedLevels.size} of 20 levels completed
+          </span>
+          <span className="text-sm font-semibold text-[#d4af37]">{completionPercentage}%</span>
+        </div>
+        <div className="h-3 bg-gray-800 border border-[#d4af37]/30 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-gradient-to-r from-[#d4af37] to-[#b5a642] transition-all duration-500"
+            style={{ width: `${completionPercentage}%` }}
+          />
+        </div>
+      </div>
+
+      <p className="text-xs text-gray-400 mb-4 italic">
+        Click on a level number to mark it as complete
+      </p>
+
+      <div className="flex flex-wrap gap-2">
+        {Array.from({ length: 20 }).map((_, i) => {
+          const level = i + 1;
+          const isCompleted = completedLevels.has(level);
+          return (
+            <button
+              key={level}
+              onClick={() => toggleLevel(level)}
+              className={`flex h-10 w-10 items-center justify-center border text-xs font-semibold transition-all duration-300 hover:scale-110 ${
+                isCompleted
+                  ? 'border-[#d4af37] bg-[#d4af37] text-black shadow-[0_0_12px_rgba(212,175,55,0.6)]'
+                  : 'border-[#d4af37]/40 text-gray-300 hover:border-[#d4af37] hover:bg-[#d4af37]/10'
+              }`}
+              title={isCompleted ? `Level ${level} - Completed! Click to unmark` : `Level ${level} - Click to mark as complete`}
+            >
+              {level}
+            </button>
+          );
+        })}
+      </div>
+
+      {completedLevels.size === 20 && (
+        <div className="mt-4 p-4 border-2 border-[#d4af37] bg-[#d4af37]/10 text-center">
+          <p className="text-lg font-bold text-[#d4af37] mb-2">🎉 First Degree Complete! 🎉</p>
+          <p className="text-sm text-gray-300">
+            You have mastered the fundamental language of creation. The path to the Second Degree awaits.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function GrimoireComponent() {
+  const [entries, setEntries] = useState<Array<{ id: string; date: string; title: string; content: string }>>(() => {
+    if (typeof window === 'undefined') return [];
+    const saved = localStorage.getItem('grimoire-entries');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error('Failed to load grimoire:', e);
+        return [];
+      }
+    }
+    return [];
+  });
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [currentEntry, setCurrentEntry] = useState({ title: '', content: '' });
+  const [editingId, setEditingId] = useState<string | null>(null);
+
+  const saveEntries = useCallback((newEntries: typeof entries) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('grimoire-entries', JSON.stringify(newEntries));
+    }
+    setEntries(newEntries);
+  }, []);
+
+  const handleSaveEntry = useCallback(() => {
+    if (!currentEntry.title.trim() || !currentEntry.content.trim()) {
+      alert('Please fill in both title and content');
+      return;
+    }
+
+    const now = new Date().toISOString();
+    if (editingId) {
+      const updated = entries.map(e => 
+        e.id === editingId 
+          ? { ...e, title: currentEntry.title, content: currentEntry.content, date: now }
+          : e
+      );
+      saveEntries(updated);
+    } else {
+      const newEntry = {
+        id: `entry-${Date.now()}`,
+        date: now,
+        title: currentEntry.title,
+        content: currentEntry.content
+      };
+      saveEntries([newEntry, ...entries]);
+    }
+
+    setCurrentEntry({ title: '', content: '' });
+    setEditingId(null);
+    setIsOpen(false);
+  }, [currentEntry, editingId, entries, saveEntries]);
+
+  const handleEdit = useCallback((entry: typeof entries[0]) => {
+    setCurrentEntry({ title: entry.title, content: entry.content });
+    setEditingId(entry.id);
+    setIsOpen(true);
+  }, []);
+
+  const handleDelete = useCallback((id: string) => {
+    if (confirm('Are you sure you want to delete this entry?')) {
+      saveEntries(entries.filter(e => e.id !== id));
+    }
+  }, [entries, saveEntries]);
+
+  const handleCancel = useCallback(() => {
+    setCurrentEntry({ title: '', content: '' });
+    setEditingId(null);
+    setIsOpen(false);
+  }, []);
+
+  return (
+    <div className="border-2 border-[#d4af37]/40 bg-gradient-to-br from-[#1c142c]/60 to-black/60 p-8">
+      <div className="mb-6 flex items-center justify-between">
+        <h3 className="text-2xl font-bold text-[#d4af37]">📖 Your Grimoire</h3>
+        <button
+          onClick={() => setIsOpen(true)}
+          className="border-2 border-[#d4af37] px-5 py-2 text-sm font-semibold uppercase tracking-wider text-[#d4af37] transition-all duration-300 hover:bg-[#d4af37] hover:text-black"
+        >
+          + New Entry
+        </button>
+      </div>
+
+      {isOpen && (
+        <div className="mb-6 rounded-lg border-2 border-[#d4af37] bg-black/60 p-6">
+          <h4 className="mb-4 text-lg font-semibold text-[#d4af37]">
+            {editingId ? 'Edit Entry' : 'New Entry'}
+          </h4>
+          <input
+            type="text"
+            placeholder="Entry Title (e.g., 'CodeCombat Level 5 - Loops')"
+            value={currentEntry.title}
+            onChange={(e) => setCurrentEntry({ ...currentEntry, title: e.target.value })}
+            className="mb-4 w-full rounded border border-[#d4af37]/40 bg-black/60 px-4 py-2 text-gray-200 placeholder-gray-500 focus:border-[#d4af37] focus:outline-none"
+          />
+          <textarea
+            placeholder="Write your notes, insights, code snippets, or discoveries here..."
+            value={currentEntry.content}
+            onChange={(e) => setCurrentEntry({ ...currentEntry, content: e.target.value })}
+            rows={8}
+            className="mb-4 w-full rounded border border-[#d4af37]/40 bg-black/60 px-4 py-2 text-gray-200 placeholder-gray-500 focus:border-[#d4af37] focus:outline-none"
+          />
+          <div className="flex gap-3">
+            <button
+              onClick={handleSaveEntry}
+              className="border-2 border-[#d4af37] bg-[#d4af37] px-6 py-2 text-sm font-semibold uppercase tracking-wider text-black transition-all duration-300 hover:bg-[#b5a642]"
+            >
+              Save Entry
+            </button>
+            <button
+              onClick={handleCancel}
+              className="border-2 border-gray-500 px-6 py-2 text-sm font-semibold uppercase tracking-wider text-gray-400 transition-all duration-300 hover:border-gray-400 hover:text-gray-300"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {entries.length === 0 ? (
+        <div className="rounded-lg border border-[#d4af37]/20 bg-black/40 p-8 text-center">
+          <p className="text-gray-400">
+            Your Grimoire is empty. Click &quot;New Entry&quot; to record your first insight.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {entries.map((entry) => (
+            <div
+              key={entry.id}
+              className="rounded-lg border border-[#d4af37]/30 bg-black/40 p-5 transition-all duration-300 hover:border-[#d4af37]/60"
+            >
+              <div className="mb-2 flex items-start justify-between">
+                <h4 className="text-lg font-semibold text-[#d4af37]">{entry.title}</h4>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleEdit(entry)}
+                    className="text-xs uppercase tracking-wider text-gray-400 hover:text-[#d4af37]"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(entry.id)}
+                    className="text-xs uppercase tracking-wider text-gray-400 hover:text-red-400"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+              <p className="mb-3 text-xs text-gray-500">
+                {new Date(entry.date).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })}
+              </p>
+              <p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-300">{entry.content}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="mt-6 rounded-lg border border-[#d4af37]/20 bg-[#d4af37]/5 p-4">
+        <p className="text-xs text-gray-400">
+          💡 <strong className="text-[#d4af37]">Tip:</strong> Use your Grimoire to document:
+          CodeCombat solutions, logical fallacy examples you find, coding concepts you learn, or insights
+          from the Virtual Classroom. Your entries are saved in your browser.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function LogicalFallaciesStudy() {
+  const [selectedExample, setSelectedExample] = useState<number | null>(null);
+  const [userAnswer, setUserAnswer] = useState('');
+  const [showAnswer, setShowAnswer] = useState(false);
+
+  const fallacyExamples = [
+    {
+      scenario: "Senator Smith says we should increase funding for public schools. But Senator Smith was a terrible student who barely graduated. We shouldn't listen to him.",
+      isStrawMan: false,
+      explanation: "This is an Ad Hominem fallacy, not a Straw Man. It attacks the person making the argument rather than the argument itself.",
+      actualFallacy: "Ad Hominem"
+    },
+    {
+      scenario: "Jane says we should adopt healthier school lunch options. But Jane wants to completely ban all foods kids enjoy and force them to eat nothing but vegetables.",
+      isStrawMan: true,
+      explanation: "This IS a Straw Man fallacy. Jane's actual position (healthier options) is misrepresented as an extreme position (banning all enjoyable foods) to make it easier to attack.",
+      actualFallacy: "Straw Man"
+    },
+    {
+      scenario: "My opponent believes we should reduce military spending. In other words, they want to leave our country completely defenseless against any attack.",
+      isStrawMan: true,
+      explanation: "This IS a Straw Man fallacy. The opponent's position (reduce spending) is misrepresented as an extreme position (leave country defenseless).",
+      actualFallacy: "Straw Man"
+    }
+  ];
+
+  const handleCheckAnswer = useCallback(() => {
+    setShowAnswer(true);
+  }, []);
+
+  const handleNextExample = useCallback(() => {
+    setSelectedExample((prev) => {
+      const next = prev === null ? 0 : (prev + 1) % fallacyExamples.length;
+      return next;
+    });
+    setUserAnswer('');
+    setShowAnswer(false);
+  }, [fallacyExamples.length]);
+
+  const currentExample = selectedExample !== null ? fallacyExamples[selectedExample] : null;
+
+  return (
+    <div className="border-2 border-[#d4af37]/40 bg-gradient-to-br from-[#1c142c]/60 to-black/60 p-8">
+      <h3 className="mb-6 text-2xl font-bold text-[#d4af37]">🛡️ Logical Fallacies Training</h3>
+      
+      <div className="mb-6 rounded-lg border-2 border-[#d4af37]/30 bg-black/40 p-6">
+        <h4 className="mb-3 text-lg font-semibold text-[#d4af37]">What is a Straw Man Fallacy?</h4>
+        <p className="mb-4 text-sm leading-relaxed text-gray-300">
+          A <strong className="text-[#d4af37]">Straw Man fallacy</strong> occurs when someone misrepresents 
+          an opponent&apos;s argument to make it easier to attack. Instead of addressing the actual argument, 
+          they create a distorted version (the &quot;straw man&quot;) and knock that down instead.
+        </p>
+        <div className="rounded border border-[#d4af37]/20 bg-[#d4af37]/5 p-4">
+          <p className="text-xs font-semibold uppercase tracking-wider text-[#d4af37]">Structure:</p>
+          <ol className="mt-2 space-y-1 text-sm text-gray-300">
+            <li>1. Person A makes argument X</li>
+            <li>2. Person B misrepresents X as extreme argument Y</li>
+            <li>3. Person B attacks argument Y (the straw man)</li>
+            <li>4. Person B claims to have refuted Person A&apos;s position</li>
+          </ol>
+        </div>
+      </div>
+
+      <div className="mb-6">
+        <h4 className="mb-4 text-lg font-semibold text-[#d4af37]">📚 Practice Examples</h4>
+        <button
+          onClick={handleNextExample}
+          className="border-2 border-[#d4af37] px-6 py-2 text-sm font-semibold uppercase tracking-wider text-[#d4af37] transition-all duration-300 hover:bg-[#d4af37] hover:text-black"
+        >
+          {currentExample ? 'Next Example' : 'Start Practice'}
+        </button>
+      </div>
+
+      {currentExample && (
+        <div className="space-y-4">
+          <div className="rounded-lg border border-[#d4af37]/30 bg-black/50 p-6">
+            <p className="mb-4 text-sm uppercase tracking-wider text-gray-400">
+              Example {(selectedExample ?? 0) + 1} of {fallacyExamples.length}
+            </p>
+            <p className="mb-6 text-base leading-relaxed text-gray-200">
+              &quot;{currentExample.scenario}&quot;
+            </p>
+            
+            <div className="mb-4">
+              <label className="mb-2 block text-sm font-semibold text-[#d4af37]">
+                Is this a Straw Man fallacy? Why or why not?
+              </label>
+              <textarea
+                value={userAnswer}
+                onChange={(e) => setUserAnswer(e.target.value)}
+                placeholder="Type your analysis here..."
+                rows={4}
+                className="w-full rounded border border-[#d4af37]/40 bg-black/60 px-4 py-2 text-gray-200 placeholder-gray-500 focus:border-[#d4af37] focus:outline-none"
+              />
+            </div>
+
+            <button
+              onClick={handleCheckAnswer}
+              disabled={!userAnswer.trim()}
+              className="border-2 border-[#d4af37] bg-[#d4af37] px-6 py-2 text-sm font-semibold uppercase tracking-wider text-black transition-all duration-300 hover:bg-[#b5a642] disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Check Answer
+            </button>
+
+            {showAnswer && (
+              <div className="mt-6 rounded-lg border-2 border-[#d4af37] bg-[#d4af37]/10 p-5">
+                <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-[#d4af37]">
+                  Answer: {currentExample.isStrawMan ? '✓ YES - Straw Man Fallacy' : `✗ NO - This is ${currentExample.actualFallacy}`}
+                </p>
+                <p className="text-sm leading-relaxed text-gray-200">
+                  {currentExample.explanation}
+                </p>
+              </div>
+            )}
+          </div>
+
+          <div className="rounded-lg border border-[#d4af37]/20 bg-[#d4af37]/5 p-4">
+            <p className="text-xs text-gray-400">
+              💡 <strong className="text-[#d4af37]">Tip:</strong> After analyzing, save your thoughts 
+              in your Grimoire for future reference!
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function VirtualClassroomSection() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const autoOpenRef = useRef(false);
@@ -685,16 +1100,39 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="border-2 border-gray-600 bg-gray-900/20 p-6">
-            <h4 className="mb-4 text-xl font-bold text-gray-500">
-              Progress Tracker <span className="text-sm">(Coming Soon)</span>
-            </h4>
-            <div className="flex flex-wrap gap-2 opacity-30">
-              {Array.from({ length: 20 }).map((_, i) => (
-                <div key={i} className="flex h-8 w-8 items-center justify-center border border-gray-600 text-xs">
-                  {i + 1}
+          <ProgressTracker />
+
+          {/* Interactive Learning Section */}
+          <div className="mt-12 space-y-8">
+            <LogicalFallaciesStudy />
+            <GrimoireComponent />
+          </div>
+
+          {/* Student Resources */}
+          <div className="mt-12 border-2 border-[#d4af37]/30 bg-gradient-to-br from-[#1c142c]/60 to-black/60 p-8">
+            <div className="flex items-start gap-4">
+              <div className="text-4xl">📚</div>
+              <div className="flex-1">
+                <h4 className="mb-3 text-xl font-bold text-[#d4af37]">New to The Grand Plan?</h4>
+                <p className="mb-4 text-base text-gray-300 leading-relaxed">
+                  Read our comprehensive <strong className="text-[#d4af37]">Student Guide</strong> to learn how to navigate the site, 
+                  track your progress, use the Virtual Classroom, and make the most of your learning journey.
+                </p>
+                <div className="flex flex-wrap gap-4">
+                  <a
+                    href="https://github.com/Fast-Track-Academy/fast-track-academy.github.io/blob/main/STUDENT_GUIDE.md"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block border-2 border-[#d4af37] px-6 py-2 text-sm font-semibold uppercase tracking-wider text-[#d4af37] transition-all duration-300 hover:bg-[#d4af37] hover:text-black"
+                  >
+                    📖 View Student Guide
+                  </a>
+                  <div className="flex items-center gap-2 text-sm text-gray-400">
+                    <span>💡</span>
+                    <span>Tip: Bookmark this page for easy access</span>
+                  </div>
                 </div>
-              ))}
+              </div>
             </div>
           </div>
         </div>
@@ -716,10 +1154,16 @@ export default function Home() {
               <line x1="30" y1="50" x2="70" y2="50" stroke="#d4af37" strokeWidth="1" />
               <line x1="30" y1="60" x2="60" y2="60" stroke="#d4af37" strokeWidth="1" />
             </svg>
-            <p className="text-lg leading-relaxed md:text-xl">
+            <p className="mb-6 text-lg leading-relaxed md:text-xl">
               Every command you master, every fallacy you dissect, every insight you gain must be recorded. Your Grimoire is
               the testament to your journey from apprentice to architect. Guard it well.
             </p>
+            <button
+              onClick={() => scrollToSection('first-degree')}
+              className="mt-4 border-2 border-[#d4af37] px-8 py-3 text-sm font-semibold uppercase tracking-wider text-[#d4af37] transition-all duration-300 hover:bg-[#d4af37] hover:text-black"
+            >
+              Open Your Grimoire
+            </button>
           </div>
         </div>
       </section>

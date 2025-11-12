@@ -6,10 +6,13 @@ A digital temple and interactive hub for "The Grand Plan" - an elite educational
 
 ## 🚀 Quick Start
 
+### For Students
+**📖 New to The Grand Plan?** Read the [Student Guide](STUDENT_GUIDE.md) for a complete walkthrough!
+
 ### View the Live Site
 **Deployed URL:** [https://fast-track-academy.github.io](https://fast-track-academy.github.io)
 
-*Note: The site will be live once this PR is merged to the `main` branch.*
+*The site will be automatically deployed when this PR is merged to the `main` branch.*
 
 ### Run Locally (3 Simple Steps)
 ```bash
@@ -57,8 +60,10 @@ The website is a single-page application with four distinct sections:
 - Learn to identify and dismantle flawed logic
 - Document findings in the Grimoire
 
-**Progress Tracker** (Placeholder)
-- Visual representation of completion status (future feature)
+**Progress Tracker**
+- Visual representation of completion status
+- Interactive tracking of CodeCombat levels
+- Persists progress across sessions using local storage
 
 ### 3. The Scribe's Chamber (The Grimoire)
 - Establishes the importance of journaling and documentation
@@ -120,8 +125,35 @@ This site is configured for GitHub Pages deployment:
 2. Images are set to be unoptimized for static hosting
 3. A `.nojekyll` file is included in the `public/` directory
 4. The build output goes to the `out/` directory
+5. GitHub Actions workflow (`.github/workflows/deploy.yml`) automatically builds and deploys on push to `main`
 
-The site is automatically deployed to: [https://fast-track-academy.github.io](https://fast-track-academy.github.io)
+**The site is automatically deployed to:** [https://fast-track-academy.github.io](https://fast-track-academy.github.io)
+
+### Deployment Status
+
+When this PR is merged to `main`, the site will be automatically built and deployed via GitHub Actions.
+
+## Student Features
+
+### 📊 Interactive Progress Tracker
+- Track completion of CodeCombat levels 1-20
+- Progress saved automatically in browser's local storage
+- Visual progress bar with percentage
+- Completion celebration message
+- Reset functionality
+
+### 📚 Comprehensive Documentation
+- **[Student Guide](STUDENT_GUIDE.md)** - Complete walkthrough for new students
+- Getting started instructions
+- How to use all features
+- Tips for success
+- Troubleshooting help
+
+### 🎓 Virtual Classroom
+- Immersive learning environment
+- AI instructor (Ava) with interactive responses
+- Real-time session tracking
+- Workshop and Q&A features
 
 ## Project Structure
 
