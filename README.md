@@ -181,7 +181,7 @@ When this PR is merged to `main`, the site will be automatically built and deplo
 
 ## License
 
-© 2024 Fast Track Academy. All rights reserved.
+© 2025 Fast Track Academy. All rights reserved.
 
 ---
 

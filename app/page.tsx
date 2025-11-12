@@ -1205,7 +1205,7 @@ export default function Home() {
       </section>
 
       <footer className="border-t border-[#d4af37] px-6 py-8 text-center">
-        <p className="text-sm tracking-widest text-gray-400">© 2024 Fast Track Academy • The Grand Plan • Cognita Potestas Est</p>
+        <p className="text-sm tracking-widest text-gray-400">© 2025 Fast Track Academy • The Grand Plan • Cognita Potestas Est</p>
       </footer>
     </div>
   );
